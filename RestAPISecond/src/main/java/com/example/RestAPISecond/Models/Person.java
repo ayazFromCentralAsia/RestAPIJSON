@@ -18,8 +18,6 @@ public class Person {
     @NotEmpty
     private String name;
 
-    @Size(min = 10, message = "age should bew greater than 10")
-    @NotEmpty
     private int age;
 
     @Email

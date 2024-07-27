@@ -19,7 +19,13 @@ public class PeopleService {
     public List<Person> findAll(){
         return peopleRepository.findAll();
     }
+
     public Optional<Person> findOne(Long id){
         return peopleRepository.findById(id);
+    }
+
+    @Transactional
+    public void save(Person person){
+        peopleRepository.save(person);
     }
 }
