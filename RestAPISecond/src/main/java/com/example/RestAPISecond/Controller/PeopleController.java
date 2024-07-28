@@ -1,6 +1,7 @@
 package com.example.RestAPISecond.Controller;
 
 
+import com.example.RestAPISecond.Dto.PersonDTO;
 import com.example.RestAPISecond.Models.Person;
 import com.example.RestAPISecond.Services.PeopleService;
 import com.example.RestAPISecond.Util.PersonErrorResponse;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -38,7 +40,7 @@ public class PeopleController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid Person person, BindingResult bindingResult){
+    public ResponseEntity<HttpStatus> create(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();
 
@@ -52,9 +54,10 @@ public class PeopleController {
 
             throw new PersonNotCreatedException(errorMsg.toString());
         }
-        peopleService.save(person);
+        peopleService.save(convertToPerson(personDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
     @ExceptionHandler
     private ResponseEntity<PersonErrorResponse> handleException(PersonNotFoundExeption e) {
         PersonErrorResponse response = new PersonErrorResponse(
@@ -72,4 +75,14 @@ public class PeopleController {
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+    private Person convertToPerson(PersonDTO personDTO) {
+        Person person = new Person();
+
+        person.setName(personDTO.getName());
+        person.setAge(personDTO.getAge());
+        person.setEmail(personDTO.getEmail());
+
+        return person;
+    }
+
 }
